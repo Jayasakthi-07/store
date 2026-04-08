@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import styles from './page.module.css';
+import styles from '../page.module.css';
 import { Search, Send, Camera, X, ChevronDown } from 'lucide-react';
 import Header from '@/components/Header';
 
-export default function Home() {
+export default function SalesPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [settings, setSettings] = useState<any>({ telegramLink: '', instagramLink: '' });
-  const [proofs, setProofs] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
@@ -27,14 +26,9 @@ export default function Home() {
 
   const fetchSettings = async () => {
     try {
-      const [settRes, proofsRes] = await Promise.all([
-        fetch('/api/public/data?settings=true'),
-        fetch('/api/public/proof')
-      ]);
-      const settData = await settRes.json();
-      const proofsData = await proofsRes.json();
-      setSettings(settData);
-      setProofs(proofsData);
+      const res = await fetch('/api/public/data?settings=true');
+      const data = await res.json();
+      setSettings(data);
     } catch (e) { console.error(e); }
   };
 
@@ -53,7 +47,7 @@ export default function Home() {
   };
 
   const handleBuyNow = (product: any, e: React.MouseEvent) => {
-    e.preventDefault(); // Stop Link navigation
+    e.preventDefault();
     e.stopPropagation();
     if (product.status === 'sold') return;
     setSelectedProduct(product);
@@ -70,30 +64,11 @@ export default function Home() {
     setModalOpen(false);
   };
 
-  const displayedProducts = products.slice(0, 8); // Only 8 on homepage
-
   return (
     <div className={styles.container}>
       <Header />
 
-      {proofs.length > 0 && (
-        <section className={styles.proofSection}>
-          <div className={styles.proofSectionTitle}>Trusted by Hundreds</div>
-          <div className={styles.marquee}>
-            <div className={styles.marqueeContent}>
-              {proofs.map(p => <img key={p._id} src={p.imageUrl} alt="proof" className={styles.proofImage} />)}
-            </div>
-            <div className={styles.marqueeContent}>
-              {proofs.map(p => <img key={`dup-${p._id}`} src={p.imageUrl} alt="proof" className={styles.proofImage} />)}
-            </div>
-          </div>
-        </section>
-      )}
-
-      <section className={styles.hero}>
-        <h1 className={styles.heroTitle}>Premium Free Fire Collection</h1>
-        <p className={styles.heroSubtitle}>Find massive collections, rare items, and trusted level accounts today.</p>
-      </section>
+      <h1 style={{ marginBottom: '24px', fontSize: '32px' }}>All IDs on Sale</h1>
 
       <div className={styles.filterBar}>
         <div className={styles.searchWrapper}>
@@ -124,53 +99,43 @@ export default function Home() {
       {loading ? (
         <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>Loading inventory...</div>
       ) : (
-        <>
-          <div className={styles.grid}>
-            {displayedProducts.map((product) => (
-              <div key={product._id} className={`${styles.card} glass`}>
-                <Link href={`/product/${product._id}`} style={{ display: 'block' }}>
-                  {product.isFeatured && product.status !== 'sold' && <div className={styles.cardBadge}>FEATURED</div>}
-                  {product.status === 'sold' && <div className={`${styles.cardBadge} ${styles.cardBadgeSold}`}>SOLD OUT</div>}
-                  
-                  <div className={styles.cardImageWrapper}>
-                    <img 
-                      src={product.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
-                      alt={product.title} 
-                      className={styles.cardImage} 
-                    />
-                  </div>
+        <div className={styles.grid}>
+          {products.map((product) => (
+            <div key={product._id} className={`${styles.card} glass`}>
+              <Link href={`/product/${product._id}`} style={{ display: 'block' }}>
+                {product.isFeatured && product.status !== 'sold' && <div className={styles.cardBadge}>FEATURED</div>}
+                {product.status === 'sold' && <div className={`${styles.cardBadge} ${styles.cardBadgeSold}`}>SOLD OUT</div>}
+                
+                <div className={styles.cardImageWrapper}>
+                  <img 
+                    src={product.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
+                    alt={product.title} 
+                    className={styles.cardImage} 
+                  />
+                </div>
 
-                  <div className={styles.cardContent}>
-                    <h3 className={styles.cardTitle}>{product.title}</h3>
-                    <div className={styles.cardPrice}>₹{product.price.toLocaleString()}</div>
-                    <div className={styles.cardDescription}>{product.description}</div>
-                    
-                    <button 
-                      className={`btn ${product.status === 'sold' ? 'btn-secondary' : 'btn-primary'} ${styles.buyNowBtn}`}
-                      onClick={(e) => handleBuyNow(product, e)}
-                      disabled={product.status === 'sold'}
-                    >
-                      {product.status === 'sold' ? 'Out of Stock' : 'Buy Now'}
-                    </button>
-                  </div>
-                </Link>
-              </div>
-            ))}
-            {displayedProducts.length === 0 && (
-              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
-                No IDs found matching your criteria.
-              </div>
-            )}
-          </div>
-          
-          {products.length > 8 && (
-            <div style={{ textAlign: 'center', marginTop: '48px' }}>
-              <Link href="/sales" className="btn btn-primary" style={{ padding: '16px 48px', fontSize: '18px' }}>
-                View All {products.length} IDs
+                <div className={styles.cardContent}>
+                  <h3 className={styles.cardTitle}>{product.title}</h3>
+                  <div className={styles.cardPrice}>₹{product.price.toLocaleString()}</div>
+                  <div className={styles.cardDescription}>{product.description}</div>
+                  
+                  <button 
+                    className={`btn ${product.status === 'sold' ? 'btn-secondary' : 'btn-primary'} ${styles.buyNowBtn}`}
+                    onClick={(e) => handleBuyNow(product, e)}
+                    disabled={product.status === 'sold'}
+                  >
+                    {product.status === 'sold' ? 'Out of Stock' : 'Buy Now'}
+                  </button>
+                </div>
               </Link>
             </div>
+          ))}
+          {products.length === 0 && (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
+              No IDs found matching your criteria.
+            </div>
           )}
-        </>
+        </div>
       )}
 
       {/* Buy Now Modal */}
