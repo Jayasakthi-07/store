@@ -7,13 +7,13 @@ export async function GET(request: Request) {
   try {
     await connectToDatabase();
     
+    const url = new URL(request.url);
+    
     // Check if we want settings or products based on the URL
-    if (request.url.includes('/api/public/settings')) {
+    if (request.url.includes('/api/public/settings') || url.searchParams.get('settings') === 'true') {
        const settings = await Settings.findOne();
        return NextResponse.json(settings || { telegramLink: '', instagramLink: '' });
     }
-
-    const url = new URL(request.url);
     const search = url.searchParams.get('search') || '';
     const filter = url.searchParams.get('filter') || 'all'; // all, available, sold, featured
     
