@@ -182,6 +182,18 @@
   .rightColumn {
     position: static;
   }
+  .mainImageContainer {
+    height: 300px;
+  }
+  .container {
+    padding: 16px;
+  }
+  .title {
+    font-size: 24px;
+  }
+  .price {
+    font-size: 32px;
+  }
 }
 
 /* Image Zoom Modal */
