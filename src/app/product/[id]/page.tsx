@@ -25,7 +25,7 @@ export default function ProductDetails() {
   const fetchData = async () => {
     try {
       const [prodRes, settRes] = await Promise.all([
-        fetch(`/api/admin/products/${id}`),
+        fetch(`/api/public/products/${id}`),
         fetch('/api/public/data?settings=true')
       ]);
       const prodData = await prodRes.json();
@@ -65,7 +65,7 @@ export default function ProductDetails() {
   };
 
   if (loading) return <div style={{ textAlign: 'center', padding: '40px' }}>Loading...</div>;
-  if (!product) return <div style={{ textAlign: 'center', padding: '40px' }}>Product not found.</div>;
+  if (!product || product.error) return <div style={{ textAlign: 'center', padding: '40px' }}>Product not found.</div>;
 
   const images = product.images || [];
   const currentImage = images[activeIndex] || 'https://via.placeholder.com/600';
@@ -126,7 +126,7 @@ export default function ProductDetails() {
           </div>
           
           <h1 className={styles.title}>{product.title}</h1>
-          <div className={styles.price}>₹{product.price.toLocaleString()}</div>
+          <div className={styles.price}>₹{product.price ? Number(product.price).toLocaleString() : 'N/A'}</div>
 
           <div className={styles.buyNowBox}>
             <button 

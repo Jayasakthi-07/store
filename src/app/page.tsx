@@ -175,8 +175,8 @@ export default function Home() {
 
       {/* Buy Now Modal */}
       {modalOpen && (
-        <div className={styles.modalOverlay} onClick={() => setModalOpen(false)}>
-          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+        <div className="modalOverlay" onClick={() => setModalOpen(false)}>
+          <div className="modalContent" onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
               <button onClick={() => setModalOpen(false)} style={{ color: 'var(--text-secondary)' }}>
                 <X size={24} />
@@ -193,10 +193,10 @@ export default function Home() {
                Choose a platform to message the seller regarding <strong>{selectedProduct?.title}</strong>
             </p>
 
-            <button className={`${styles.modalOption} ${styles.tgBtn}`} onClick={() => handleContact('telegram')}>
+            <button className="modalOption tgBtn" onClick={() => handleContact('telegram')}>
               <Send size={24} /> Message on Telegram
             </button>
-            <button className={`${styles.modalOption} ${styles.igBtn}`} onClick={() => handleContact('instagram')}>
+            <button className="modalOption igBtn" onClick={() => handleContact('instagram')}>
               <Camera size={24} /> Message on Instagram
             </button>
           </div>
