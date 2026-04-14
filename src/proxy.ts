@@ -4,7 +4,7 @@ import { jwtVerify } from 'jose';
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback_secret_for_development_only');
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const adminToken = request.cookies.get('admin_token')?.value;
 
   if (request.nextUrl.pathname.startsWith('/admin') && !request.nextUrl.pathname.startsWith('/admin/login')) {
